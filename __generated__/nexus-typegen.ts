@@ -60,7 +60,7 @@ export interface NexusGenFieldTypes {
     title: string | null; // String
   }
   Query: { // field return type
-    drafts: Array<NexusGenRootTypes['Post'] | null>; // [Post]!
+    drafts: Array<NexusGenRootTypes['Post'] | null> | null; // [Post]
     posts: Array<NexusGenRootTypes['Post'] | null> | null; // [Post]
   }
 }

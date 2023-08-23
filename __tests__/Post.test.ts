@@ -1,5 +1,5 @@
-import { Post } from "../api/db";
 import { createTestContext } from "./__helpers";
+import { Post } from "../api/graphql";
 
 const ctx = createTestContext()
 
@@ -52,5 +52,47 @@ it('ensures that a draft can be created and published', async () => {
     "title": "Nexus",
   },
 }
+`)
+
+const persistedData = await ctx.db.post.findMany()
+expect(persistedData).toMatchInlineSnapshot(`
+[
+  {
+    "body": "body 2",
+    "id": 2,
+    "published": false,
+    "title": "title 2",
+  },
+  {
+    "body": "body 1",
+    "id": 1,
+    "published": true,
+    "title": "title 1",
+  },
+  {
+    "body": "..",
+    "id": 3,
+    "published": true,
+    "title": "Nexus",
+  },
+  {
+    "body": "..",
+    "id": 4,
+    "published": true,
+    "title": "Nexus",
+  },
+  {
+    "body": "..",
+    "id": 5,
+    "published": true,
+    "title": "Nexus",
+  },
+  {
+    "body": "..",
+    "id": 6,
+    "published": true,
+    "title": "Nexus",
+  },
+]
 `)
 })
