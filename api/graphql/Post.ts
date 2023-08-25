@@ -1,12 +1,5 @@
 import { extendType, intArg, nonNull, objectType, stringArg } from "nexus";
 
-export type Post = {
-    id: number
-    title: string
-    body: string
-    published: boolean
-}
-
 export const Post = objectType({
     name: "Post",
     definition(t) {

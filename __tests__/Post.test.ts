@@ -1,5 +1,5 @@
+import { Post } from "../api/db";
 import { createTestContext } from "./__helpers";
-import { Post } from "../api/graphql";
 
 const ctx = createTestContext()
 
