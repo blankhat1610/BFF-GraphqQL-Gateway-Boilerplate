@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+
+set -eu
+set -o pipefail
+
+cd $(dirname $0)/..
+
+APIS_DIR=./apis
+GOOGLEAPIS_DIR=./apis/vendor/github.com/googleapis/googleapis
+PROTO_GRAPHQL_DIR=./apis/vendor/github.com/proto-graphql/proto-graphql
+GRPC_GATEWAY_DIR=./apis/vendor/github.com/grpc-ecosystem/grpc-gateway
+
+NEXUS_OUT_DIR=./src/__generated__/schema/types
+APIS_OUT_DIR=./packages/apis/lib
+
+mkdir -p $NEXUS_OUT_DIR
+mkdir -p $APIS_OUT_DIR
+
+./script/protocw --version
+
+genPbNexus() {
+  ./script/protocw \
+    -I $GOOGLEAPIS_DIR \
+    -I $GRPC_GATEWAY_DIR \
+    -I $PROTO_GRAPHQL_DIR \
+    -I $APIS_DIR \
+    --plugin=protoc-gen-nexus=`yarn bin protoc-gen-nexus` \
+    --nexus_out="$NEXUS_OUT_DIR" --nexus_opt="import_prefix=@wantedly/apis/lib,partial_inputs,custom_type=google.type.Date=Date" \
+    "$@"
+}
+
+genPbJS() {
+  ./script/protocw \
+    -I $GOOGLEAPIS_DIR \
+    -I $GRPC_GATEWAY_DIR \
+    -I $PROTO_GRAPHQL_DIR \
+    -I $APIS_DIR \
+    --plugin=protoc-gen-grpc=`yarn bin grpc_tools_node_protoc_plugin` \
+    --plugin=protoc-gen-ts=`yarn bin protoc-gen-ts` \
+    --js_out="$APIS_OUT_DIR" --js_opt="import_style=commonjs,binary" \
+    --grpc_out="$APIS_OUT_DIR" \
+    --ts_out="$APIS_OUT_DIR" \
+    "$@"
+}
+
+targetProtos=(
+  ${APIS_DIR}/wantedly/users/v2/user.proto # サンプルのために追加しているので使わない
+  ${APIS_DIR}/wantedly/occupation_type/*.proto # サンプルのために追加しているので使わない
+  ${APIS_DIR}/wantedly/ats/*.proto
+)
+
+targetProtosWithoutNexus=(
+  ${APIS_DIR}/wantedly/api/*.proto
+  ${GOOGLEAPIS_DIR}/google/api/*.proto
+  ${GOOGLEAPIS_DIR}/google/rpc/*.proto
+  ${GOOGLEAPIS_DIR}/google/type/*.proto
+  ${GRPC_GATEWAY_DIR}/protoc-gen-swagger/options/*.proto
+  ${PROTO_GRAPHQL_DIR}/graphql/*.proto
+)
+
+genPbJS ${targetProtos[@]} ${targetProtosWithoutNexus[@]} &
+genPbNexus ${targetProtos[@]} &
+
+wait
