@@ -7,14 +7,18 @@
     "@changesets/cli": "^2.26.2"
   },
   "scripts": {
+    "generate:api-codegen": "./script/api-codegen",
     "prepare": "husky install",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "grpc_tools_node_protoc_ts": "^5.3.3",
+    "grpc-tools": "^1.12.4",
     "husky": "^8.0.3",
-    "lint-staged": "^14.0.1"
+    "lint-staged": "^14.0.1",
+    "protoc-gen-nexus": "^0.6.2"
   },
   "lint-staged": {
     "**/*.{js,ts,json}": [

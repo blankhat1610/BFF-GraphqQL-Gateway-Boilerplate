@@ -6,11 +6,11 @@ set -o pipefail
 cd $(dirname $0)/..
 
 APIS_DIR=./apis
-GOOGLEAPIS_DIR=./apis/vendor/github.com/googleapis/googleapis
-PROTO_GRAPHQL_DIR=./apis/vendor/github.com/proto-graphql/proto-graphql
-GRPC_GATEWAY_DIR=./apis/vendor/github.com/grpc-ecosystem/grpc-gateway
+GOOGLEAPIS_DIR=./apis/vendor/googleapis
+PROTO_GRAPHQL_DIR=./apis/vendor/proto-graphql
+GRPC_GATEWAY_DIR=./apis/vendor/grpc-gateway
 
-NEXUS_OUT_DIR=./src/__generated__/schema/types
+NEXUS_OUT_DIR=./gateway/__generated__/schema/types
 APIS_OUT_DIR=./packages/apis/lib
 
 mkdir -p $NEXUS_OUT_DIR
@@ -25,7 +25,8 @@ genPbNexus() {
     -I $PROTO_GRAPHQL_DIR \
     -I $APIS_DIR \
     --plugin=protoc-gen-nexus=`yarn bin protoc-gen-nexus` \
-    --nexus_out="$NEXUS_OUT_DIR" --nexus_opt="import_prefix=@wantedly/apis/lib,partial_inputs,custom_type=google.type.Date=Date" \
+    --nexus_out="$NEXUS_OUT_DIR" \
+    --nexus_opt="import_prefix=@blankhat/apis/lib,partial_inputs,custom_type=google.type.Date=Date" \
     "$@"
 }
 
@@ -44,18 +45,16 @@ genPbJS() {
 }
 
 targetProtos=(
-  ${APIS_DIR}/wantedly/users/v2/user.proto # サンプルのために追加しているので使わない
-  ${APIS_DIR}/wantedly/occupation_type/*.proto # サンプルのために追加しているので使わない
-  ${APIS_DIR}/wantedly/ats/*.proto
+  ${APIS_DIR}/protos/helloworld/*.proto
 )
 
 targetProtosWithoutNexus=(
-  ${APIS_DIR}/wantedly/api/*.proto
+  ${APIS_DIR}/protos/helloworld/*.proto
   ${GOOGLEAPIS_DIR}/google/api/*.proto
   ${GOOGLEAPIS_DIR}/google/rpc/*.proto
   ${GOOGLEAPIS_DIR}/google/type/*.proto
-  ${GRPC_GATEWAY_DIR}/protoc-gen-swagger/options/*.proto
-  ${PROTO_GRAPHQL_DIR}/graphql/*.proto
+  ${GRPC_GATEWAY_DIR}/protoc-gen-openapiv2/options/*.proto
+  ${PROTO_GRAPHQL_DIR}/proto/graphql/*.proto
 )
 
 genPbJS ${targetProtos[@]} ${targetProtosWithoutNexus[@]} &

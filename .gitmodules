@@ -1,0 +1,9 @@
+[submodule "apis/vendor/grpc-gateway"]
+	path = apis/vendor/grpc-gateway
+	url = https://github.com/grpc-ecosystem/grpc-gateway
+[submodule "apis/vendor/googleapis"]
+	path = apis/vendor/googleapis
+	url = https://github.com/googleapis/googleapis
+[submodule "apis/vendor/proto-graphql"]
+	path = apis/vendor/proto-graphql
+	url = https://github.com/proto-graphql/proto-graphql
