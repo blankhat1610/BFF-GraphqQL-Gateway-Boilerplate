@@ -5,20 +5,31 @@ set -o pipefail
 
 ROOT_DIR=$(dirname $0)/..
 
-PROTOC_VERSION='3.14.0'
+PROTOC_VERSION='24.0'
+PROTO_JS_VERSION='3.21.2'
 PROTOC_DIR=$ROOT_DIR/tmp/protoc-${PROTOC_VERSION}
 PROTOC_BIN=$PROTOC_DIR/bin/protoc
+PROTO_JS_DIR=$ROOT_DIR/tmp/protobuf-javascript-${PROTO_JS_VERSION}
+PROTO_JS_BIN=$PROTO_JS_DIR/bin/protoc-gen-js
 
 unameOs() {
   os=$(uname -s | tr '[:upper:]' '[:lower:]')
   case "$os" in
-    cygwin_nt*) os="windows" ;;
-    mingw*) os="windows" ;;
-    msys_nt*) os="windows" ;;
-    darwin) os="osx" ;;
+  cygwin_nt*) os="windows" ;;
+  mingw*) os="windows" ;;
+  msys_nt*) os="windows" ;;
+  darwin) os="osx" ;;
   esac
   echo "$os"
 }
+
+# Get Operating System and current hardware platform
+os="$(unameOs)"
+arch="$(uname -m)"
+if [[ $os = "osx" && $arch = "arm64" ]]; then
+  # Use name on official page
+  arch=aarch_64
+fi
 
 downloadProtoc() {
   if [ -f $PROTOC_BIN ]; then
@@ -27,20 +38,28 @@ downloadProtoc() {
 
   mkdir -p $PROTOC_DIR
 
-  os="$(unameOs)"
-  arch="$(uname -m)"
-  if [[ $os = "osx" && $arch = "arm64" ]]; then
-    # Use Rosetta2
-    arch=x86_64
+  protoc_archive="protoc-${PROTOC_VERSION}-$os-$arch.zip"
+  curl -sfOL https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/${protoc_archive}
+  unzip $protoc_archive -d $PROTOC_DIR
+  rm -rf $protoc_archive
+}
+
+downloadProtobufJS() {
+  if [ -f $PROTO_JS_BIN ]; then
+    return
   fi
-  archive="protoc-${PROTOC_VERSION}-$os-$arch.zip"
-  curl -sfOL https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/${archive}
-  unzip $archive -d $PROTOC_DIR
-  rm -rf $archive
+
+  mkdir -p $PROTO_JS_DIR
+
+  protojs_archive="protobuf-javascript-${PROTO_JS_VERSION}-$os-$arch.zip"
+  curl -sfOL https://github.com/protocolbuffers/protobuf-javascript/releases/download/v${PROTO_JS_VERSION}/${protojs_archive}
+  unzip $protojs_archive -d $PROTO_JS_DIR
+  rm -rf $protojs_archive
 }
 
 _main() {
   downloadProtoc
+  downloadProtobufJS
 
   $PROTOC_BIN -I $PROTOC_DIR/include "$@"
 }

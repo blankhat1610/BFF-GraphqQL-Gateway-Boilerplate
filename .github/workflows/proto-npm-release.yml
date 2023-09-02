@@ -1,40 +1,40 @@
-name: Release
+# name: Release
 
-on:
-  push:
-    tags:
-      - "@blankhat/protos@*"
+# on:
+#   push:
+#     tags:
+#       - "@blankhat/apis@*"
 
-jobs:
-  publish:
-    name: Build and Publish
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+# jobs:
+#   publish:
+#     name: Build and Publish
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v3
+#         with:
+#           fetch-depth: 0
 
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: "16.x"
-          registry-url: "https://registry.npmjs.org/"
-          scope: "@blankhat"
+#       - name: Setup Node
+#         uses: actions/setup-node@v3
+#         with:
+#           node-version: "18.x"
+#           registry-url: "https://registry.npmjs.org/"
+#           scope: "@blankhat"
 
-      - name: Install Protoc
-        uses: arduino/setup-protoc@master
-        with:
-          version: "3.x"
+#       - name: Install Protoc
+#         uses: arduino/setup-protoc@master
+#         with:
+#           version: "3.x"
 
-      - name: Install and Build Packages
-        run: |
-          cd packages/protos
-          npm install
-          npm run build
+#       - name: Install and Build Packages
+#         run: |
+#           cd packages/blankhat
+#           npm install
+#           npm run build
 
-      - name: Publish packages
-        run: |
-          cd packages/protos/dist/ts
-          npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+#       - name: Publish packages
+#         run: |
+#           cd packages/blankhat/dist/ts
+#           npm publish --access public
+#         env:
+#           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}

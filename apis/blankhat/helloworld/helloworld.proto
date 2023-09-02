@@ -1,9 +1,9 @@
 syntax = "proto3";
 
-package helloworld;
+package blankhat.helloworld;
 
 // The greeting service definition
-service Greeter {
+service Hello {
   // Sends a greeting
   rpc SayHello (HelloRequest) returns (HelloReply) {}
 }
