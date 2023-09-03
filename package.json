@@ -10,12 +10,15 @@
   },
   "scripts": {
     "generate:api-codegen": "./script/api-codegen",
+    "watch:server": "nodemon --watch services/**/*.ts --exec 'node -r @swc-node/register -r dotenv/config services/helloworld/server.ts'",
     "prepare": "husky install",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "blankhat1610",
   "license": "ISC",
   "devDependencies": {
+    "@swc-node/register": "^1.6.7",
+    "dotenv": "^16.3.1",
     "grpc_tools_node_protoc_ts": "^5.3.3",
     "grpc-tools": "^1.12.4",
     "husky": "^8.0.3",
