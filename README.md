@@ -1,12 +1,13 @@
-# BFF-GraphqQL-Gateway-Boilerplate
+# Backend for Frontend GraphQL Gateway Boilerplate
 
-## Folder structure
+## Folder Structure
+```
 ├── README.md
-├── apis
+├── apis                      # Project proto & 3rd party proto
 │   ├── blankhat
 │   └── vendor
 ├── docker-compose.yml
-├── gateway
+├── gateway                   # BFF Gateway
 │   ├── __generated__
 │   ├── __tests__
 │   ├── context
@@ -19,13 +20,14 @@
 │   └── utils
 ├── package-lock.json
 ├── package.json
-├── packages
+├── packages                  # Generated packages
 │   └── apis
-├── script
+├── script                    # Generate Javascript code
 │   ├── api-codegen
 │   └── protocw
-├── services
+├── services                  # BE services
 │   └── helloworld
-└── tmp
-    ├── protobuf-javascript-3.21.2
-    └── protoc-24.0
+└── tmp                       # Executable protoc
+    ├── protobuf-javascript
+    └── protoc
+```
